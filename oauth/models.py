@@ -5,6 +5,11 @@ from django.db import models
 
 from django.utils import timezone
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+from django.conf import settings
+
 class UserManager(BaseUserManager):
     """
     Creating UserManager class from BaseUserManager
@@ -75,17 +80,23 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
         else:
             return str("-")
 
-    def phone_number(self):
+    def get_phone_number(self):
         if self.phone_number:
             return str(self.phone_number)
         else:
             return str("-")
             
-    def is_email_verified(self):
+    def get_is_email_verified(self):
         if self.is_email_verified:
             return str(self.is_email_verified)
         else:
             return str("False")                
+
+    # @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    # def create_auth_token(sender, instance=None, created=False, **kwargs):
+    #     if created:
+    #         Token.objects.create(user=instance)
+
 
 class Customer(BaseUser):
     first_name = models.CharField(max_length=80, blank=True, null=True)

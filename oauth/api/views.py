@@ -1,3 +1,7 @@
+import requests 
+import json
+
+
 from oauth2_provider.views.generic import ProtectedResourceView
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -16,7 +20,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_205_RESET_CONTENT
-
+from rest_framework_jwt.utils import jwt_payload_handler
 
 from oauthlib.common import generate_token
 
@@ -42,7 +46,13 @@ class ApiEndpoint(ProtectedResourceView):
 @login_required()
 def secret_page(request, *args, **kwargs):
     return HttpResponse('Secret contents!', status=200)
-        
+
+
+def create_token(user):
+    payload = jwt_payload_handler(user)
+    token = jwt.encode(payload, settings.SECRET_KEY)
+    return token.decode('unicode_escape')
+
 class CreateUserView(CreateAPIView):
     """
     Creating API for User creation which takes user
@@ -61,7 +71,7 @@ class CreateUserView(CreateAPIView):
 
         if serializer.is_valid():
             user = serializer.save()
-
+            # user.update(create_token(user.email))
             # token = generate_token(
             #     self, user.email,
             #     user_data.get('password'))
@@ -75,8 +85,6 @@ class CreateUserView(CreateAPIView):
                 'msg': 'Registration Successfully Please Verify Email',
                 'Email' : user_data['email'],
                 'Mobile No' : user_data['phone_number'],
-                # 'is_email_verifird' : user_data['is_email_verified'],
-
 
                 # 'token': json.loads(token._content)
                 })
@@ -99,15 +107,25 @@ class UserLoginAPIView(APIView):
             return Response(data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)     
 
+def myView(email, password):
+        url = "http://127.0.0.1:8000/api/auth/token/"
+        # payload = json.load(open("requests.json"))
+        headers = {'content-type':'application/json', 'Accept-Charset': 'UTF-8'}
+        r = requests.post(url, data=json.dumps({"email" : email,"password": password}), headers=headers)
+        # response = urllib.request.urlopen(r)
+        data = r.json()
+        return data
+
 class Login(APIView):
     permission_classes = (AllowAny,)
     serializer_class = UserLoginSerializer
 
     # def token (self,request, *args, **kwargs):
-    #     data = ' curl -X POST -d "email=admin@gmail.com&password=admin123 http://127.0.0.1:8000/api/auth/token/'
+    #     data = "curl -X POST -d "email=admin@gmail.com&password=admin123 http://127.0.0.1:8000/api/auth/token/" "
     #     headers = {'X-OpenAM-Username':'user', 'X-OpenAM-Password':'password', 'Content-Type':'application/json'}
     #     data = {}
     #     r = requests.get('http://openam.sp.com:8095/openamSP/json/authenticate', headers=headers, params=data)
+
 
     def post(self, request, *args, **kwargs):
         user_data = request.data
@@ -123,7 +141,7 @@ class Login(APIView):
                 user_serializer = UserLoginSerializer(user_detail)
                 # ret data
                 data = {'error': False, 'result': user_serializer.data }
-                # data.update(myView(email, password))
+                data.update(myView(email, password))
                 return Response(data)
             else:
                 return Response({'error': True, 'result': 'This user is not active'})
@@ -131,8 +149,11 @@ class Login(APIView):
             return Response({'error': True, 'result': 'Invalid email or password'})
 
 
-               
-
+class LogoutView(APIView):
+    permission_classes = (AllowAny,)               
+    def get(self, request):
+        logout(request)
+        return Response({"error": False, 'result': "logged out successfully"})
 
 # class LoginView(GenericAPIView):
 

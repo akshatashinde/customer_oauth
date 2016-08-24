@@ -20,12 +20,17 @@ class UserSerializer(ModelSerializer):
     and returns user object.
     """
     password = serializers.CharField()
-
+    phone_number = serializers.CharField(max_length=15)
     class Meta:
         model = BaseUser
-        fields = (
+        fields = [
             'id','email',
-            'phone_number','date_joined','password')
+            'phone_number',
+            'date_joined',
+            'get_is_email_verified',
+            'password'
+            ]
+
         read_only_fields = ('id', 'password',)
 
     def create(self, validated_data):
@@ -56,9 +61,9 @@ class UserLoginSerializer(ModelSerializer):
 		fields =[
 			'email', 
 			'password',	
-			'phone_number',
+			'get_phone_number',
 			'date_joined',
-			'is_email_verified',
+			'get_is_email_verified',
 			'token'
 		]
 		extra_kwargs = {"password":
