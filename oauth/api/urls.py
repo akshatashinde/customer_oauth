@@ -4,8 +4,11 @@ import oauth2_provider.views as oauth2_views
 from django.conf import settings
 from .views import (
 	ApiEndpoint, secret_page, CreateUserView, UserLoginAPIView, 
-	Login, 
+	# Login, 
 	LogoutView,
+    CreateUserView1,
+    LoginView,
+    # SignUp,
 	)
 
 urlpatterns = [
@@ -13,8 +16,10 @@ urlpatterns = [
     url(r'^secret/$', secret_page, name='secret'),
     url(r'^register/$', CreateUserView.as_view(),
         name='create_user'),
+    url(r'^signup/$', CreateUserView1.as_view() , name='signup'),
+        url(r'^login/$', LoginView.as_view() , name='LoginView'),    
     url(r'^login1/$', UserLoginAPIView.as_view() , name='login1'),
-    url(r'^login/$', Login.as_view() , name='login'),
+    # url(r'^login/$', Login.as_view() , name='login'),
     url(r'^logout/$',LogoutView.as_view(), name='logout'),
 ]
 

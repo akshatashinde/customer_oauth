@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.conf.urls import include, url
 import oauth2_provider.views as oauth2_views
 from django.conf import settings
-from rest_framework_jwt.views import obtain_jwt_token
-from rest_framework_jwt.views import refresh_jwt_token
+#from rest_framework_jwt.views import obtain_jwt_token
+#from rest_framework_jwt.views import refresh_jwt_token
 
 # OAuth2 provider endpoints
 oauth2_endpoint_views = [
@@ -48,9 +48,9 @@ if settings.DEBUG:
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/users/', include('music.api.urls', namespace='users-api')),
-    url(r'^api/auth/', include('oauth.api.urls', namespace='oauth-api')),
-    url(r'^api/auth/token/', obtain_jwt_token),
-    url(r'^api/auth/token/refresh/', refresh_jwt_token),
+    url(r'^api/user/', include('oauth.api.urls', namespace='oauth-api')),
+    #url(r'^api/auth/token/', obtain_jwt_token),
+    #url(r'^api/auth/token/refresh/', refresh_jwt_token),
     url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(r'^oo/', include(oauth2_endpoint_views, namespace="oauth2_provider")),
     # url(r'^api/hello', views.ApiEndpoint), 

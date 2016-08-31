@@ -20,18 +20,21 @@ class UserSerializer(ModelSerializer):
     and returns user object.
     """
     password = serializers.CharField()
+    confirm_password = serializers.CharField()
     phone_number = serializers.CharField(max_length=15)
     class Meta:
         model = BaseUser
         fields = [
-            'id','email',
+            'id',
+            'email',
             'phone_number',
-            'date_joined',
+            # 'get_date_joined',
             'get_is_email_verified',
-            'password'
+            'password',
+            'confirm_password'
             ]
 
-        read_only_fields = ('id', 'password',)
+        read_only_fields = ('id', 'password', 'confirm_password')
 
     def create(self, validated_data):
         # first_name = validated_data.get('first_name', '')
@@ -95,6 +98,11 @@ class UserLoginSerializer(ModelSerializer):
 		return data	 	
 
 
+class SignUpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BaseUser
+        fields = ('username', 'password')
+        write_only_fields = ('password',)
 
 
 
@@ -190,3 +198,5 @@ class UserLoginSerializer(ModelSerializer):
 
 #         attrs['user'] = user
 #         return attrs    
+
+

@@ -37,23 +37,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'oauth2_provider',
-    # 'django.contrib.admin',
-    # 'corsheaders',
+
     'oauth',
-    'music',
+
+    'django_extensions',
     'rest_framework',
-    'rest_framework.authtoken',
-
-
+    'oauth2_provider',
+    'corsheaders',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -95,14 +94,17 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+        # 'rest_framework.authentication.OAuth2Authentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        #'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.TokenAuthentication',
 
     ),
 
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+
+    'DEFAULT_MODEL_SERIALIZER_CLASS': 'rest_framework.serializers.ModelSerializer',
 }
 
 OAUTH2_PROVIDER = {
@@ -150,6 +152,21 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'oauth.BaseUser'
+
+OTP_LENGTH = 6
+
+# Enabling Cross Site Request
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Client Id User for Oauth2
+CLIENT_ID = 'WLlxqNszAtBL5p0ZV8kshj7kLTWEUYzfrcHg1Pua'
+
+# Client Secret Used For Oauth 2
+CLIENT_SECRET = 'DI8f9EaNBpf6EOSuSKNQ8SQeOuo2bEDHfZ0ZRzbwxIxAKEGsYDUV5J4n3BNjc7Mvsum1kD0jOaJWE3wfwhtuxlgWES93u5i58TotVxlGmKS8rnqbhBytHRS2IUEIPlBb'
+
+# Make it https if protocol used is https
+SERVER_PROTOCOLS = 'http://'
+
 
 '''
 

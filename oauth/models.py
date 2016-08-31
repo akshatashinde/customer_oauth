@@ -48,6 +48,8 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
     Adding custom fields (phone number) to the base user model.
     Implementing Validation on phone number.
     """
+    username = models.CharField(max_length=15,
+                                    null=True, blank=True)
     email = models.EmailField(unique=True)
 
     phone_number = models.CharField(max_length=15,
